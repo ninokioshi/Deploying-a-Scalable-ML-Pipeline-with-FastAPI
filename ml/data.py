@@ -44,30 +44,41 @@ def process_data(
         passed in.
     """
 
+    # Separate label (if provided)
     if label is not None:
         y = X[label]
         X = X.drop([label], axis=1)
     else:
         y = np.array([])
 
+    # Split categorical vs continuous
     X_categorical = X[categorical_features].values
     X_continuous = X.drop(*[categorical_features], axis=1)
 
     if training is True:
-        encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
+        # Version-agnostic: don't pass sparse/sparse_output; densify after transform
+        encoder = OneHotEncoder(handle_unknown="ignore")
         lb = LabelBinarizer()
         X_categorical = encoder.fit_transform(X_categorical)
+        # Densify if sparse
+        if hasattr(X_categorical, "toarray"):
+            X_categorical = X_categorical.toarray()
         y = lb.fit_transform(y.values).ravel()
     else:
+        # Use provided encoders for inference/validation
         X_categorical = encoder.transform(X_categorical)
+        if hasattr(X_categorical, "toarray"):
+            X_categorical = X_categorical.toarray()
         try:
             y = lb.transform(y.values).ravel()
         # Catch the case where y is None because we're doing inference.
         except AttributeError:
             pass
 
+    # Concatenate continuous + encoded categorical
     X = np.concatenate([X_continuous, X_categorical], axis=1)
     return X, y, encoder, lb
+
 
 def apply_label(inference):
     """ Convert the binary label in a single inference sample into string output."""

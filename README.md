@@ -1,29 +1,127 @@
-Working in a command line environment is recommended for ease of use with git and dvc. If on Windows, WSL1 or 2 is recommended.
+# Deploying a Scalable ML Pipeline with FastAPI
 
-# Environment Set up (pip or conda)
-* Option 1: use the supplied file `environment.yml` to create a new environment with conda
-* Option 2: use the supplied file `requirements.txt` to create a new environment with pip
-    
-## Repositories
-* Create a directory for the project and initialize git.
-    * As you work on the code, continually commit changes. Trained models you want to use in production must be committed to GitHub.
-* Connect your local git repo to GitHub.
-* Setup GitHub Actions on your repo. You can use one of the pre-made GitHub Actions if at a minimum it runs pytest and flake8 on push and requires both to pass without error.
-    * Make sure you set up the GitHub Action to have the same version of Python as you used in development.
+## Author
+**Nino Delgado**
 
-# Data
-* Download census.csv and commit it to dvc.
-* This data is messy, try to open it in pandas and see what you get.
-* To clean it, use your favorite text editor to remove all spaces.
+## Project Overview
+This project trains and deploys a machine learning model to predict whether an individual earns **more than $50K** or **less than or equal to $50K** annually, based on demographic and employment data from the U.S. Census.  
+It demonstrates the full ML lifecycle — data preprocessing, model training, evaluation, testing, and API deployment — while maintaining CI/CD automation through GitHub Actions.
 
-# Model
-* Using the starter code, write a machine learning model that trains on the clean data and saves the model. Complete any function that has been started.
-* Write unit tests for at least 3 functions in the model code.
-* Write a function that outputs the performance of the model on slices of the data.
-    * Suggestion: for simplicity, the function can just output the performance on slices of just the categorical features.
-* Write a model card using the provided template.
+## Repository
+**Public GitHub Repository:**  
+[https://github.com/ninokioshi/Deploying-a-Scalable-ML-Pipeline-with-FastAPI](https://github.com/ninokioshi/Deploying-a-Scalable-ML-Pipeline-with-FastAPI)
 
-# API Creation
-*  Create a RESTful API using FastAPI this must implement:
-    * GET on the root giving a welcome message.
-    * POST that does model inference.
+---
+
+## Environment Setup
+1. Create and activate a virtual environment:
+   python3 -m venv fastapi  
+   source fastapi/bin/activate  
+   pip install -r requirements.txt  
+
+---
+
+## Training and Evaluation
+Run the following command to train the model and compute evaluation metrics:  
+   python train_model.py  
+
+**Outputs:**
+- model/model.pkl — trained Random Forest model  
+- model/encoder.pkl — fitted OneHotEncoder  
+- slice_output.txt — metrics across categorical slices  
+- Console output showing model performance  
+
+**My Results:**  
+Precision: 0.7338 | Recall: 0.6365 | F1: 0.6817  
+
+---
+
+## Unit Testing
+Run all tests:  
+   pytest -v  
+
+**Expected result:**  
+3 passed in 2.71s  
+
+**Screenshot saved:**  
+screenshots/unit_test.png  
+
+---
+
+## Continuous Integration (CI)
+This project uses GitHub Actions for continuous integration.  
+Every push to the main branch triggers the following steps:  
+- Install dependencies from requirements.txt  
+- Run flake8 for linting  
+- Run pytest for testing  
+
+**Screenshot saved:**  
+screenshots/continuous_integration.png  
+
+---
+
+## FastAPI Deployment
+Start the API locally:  
+   uvicorn main:app --reload  
+
+Then, in another terminal, run the local API client:  
+   python local_api.py  
+
+**Example responses:**  
+GET Status Code: 200  
+GET Response: {'message': 'Welcome to the Census Income Prediction API!'}  
+POST Status Code: 200  
+POST Response: {'prediction': '>50K'}  
+
+**Screenshot saved:**  
+screenshots/local_api.png  
+
+---
+
+## Model Card
+A complete model card is located in:  
+model/model_card_template.md  
+
+It includes:  
+- Model overview and purpose  
+- Dataset details  
+- Evaluation metrics and slice analysis  
+- Ethical considerations and intended use  
+
+---
+
+## Data Slice Evaluation
+Model performance across data slices is written to slice_output.txt.  
+Each slice represents one unique categorical feature value, showing how the model performs for subsets of the data.  
+
+**Example:**  
+workclass: Private, Count: 4595  
+Precision: 0.7381 | Recall: 0.6245 | F1: 0.6766  
+
+---
+
+## Project Deliverables Checklist
+✅ ml/data.py — Preprocessing functions implemented  
+✅ ml/model.py — Model training, inference, and slice performance functions implemented  
+✅ train_model.py — End-to-end ML pipeline completed  
+✅ test_ml.py — 3+ passing unit tests  
+✅ main.py and local_api.py — API endpoints implemented and tested locally  
+✅ model_card_template.md — Completed with metrics and documentation  
+✅ screenshots/ — Includes:  
+   - continuous_integration.png  
+   - unit_test.png  
+   - local_api.png  
+
+---
+
+## Submission Instructions
+Before submission, ensure:  
+- Your GitHub repository is public  
+- The README includes your GitHub link  
+- The latest commit contains:  
+  - All code and screenshots  
+  - Model card and slice metrics  
+  - Passing CI build  
+
+**Final Deliverable:**  
+A fully functional, tested, and documented machine learning pipeline deployed with FastAPI, demonstrating CI/CD integration and data slice analysis.

@@ -1,7 +1,7 @@
 # Model Card: Census Income Prediction API
 
 ## Model Details
-- **Developer:** Student (ninokioshi)
+- **Developer:** Student (Nino Delgado)
 - **Model Type:** Supervised binary classification
 - **Algorithm:** Random Forest Classifier (from scikit-learn)
 - **Version:** 1.0
@@ -64,6 +64,4 @@ Users should:
 
 ---
 
-## Acknowledgements
-This project is part of **Udacity’s Machine Learning DevOps Engineer Nanodegree (Project D501-2)**.  
-It demonstrates end-to-end deployment of a scalable ML pipeline using **FastAPI**, **GitHub Actions**, and **pytest**.
+
